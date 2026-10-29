@@ -3,7 +3,7 @@
 {{description}}
 
 A [FerroUI](https://github.com/wieslawsoltes/FerroUI) application generated from
-[`gh:scialpicoody/FerroTemplate`](https://github.com/scialpicoody/FerroTemplate)
+[FerroTemplate](https://github.com/scialpicoody/FerroTemplate)
 (UI style: **{{style}}**, theme: **{{theme}}**, FerroUI `{{ferroui_version}}`).
 
 ## Getting started

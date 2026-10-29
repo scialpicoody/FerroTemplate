@@ -20,23 +20,29 @@ complete, CI-verified desktop application in your choice of UI style and theme.
 
 ```sh
 cargo install cargo-generate        # once
-cargo generate gh:scialpicoody/FerroTemplate
+cargo generate --git https://github.com/scialpicoody/FerroTemplate.git
 cd <your-project>
 cargo run                           # a window with "Hello, World!" and a click counter
 ```
 
 ## Ways to generate
 
+The `--git <url>` form works with any git remote — HTTPS, SSH, GitHub, GitLab,
+self-hosted — so it is the recommended spelling. The `gh:` shorthand below is its
+equivalent for GitHub (`gh:owner/repo` = `--git https://github.com/owner/repo.git`).
+
 **Interactive** (answer the four prompts, Enter accepts the default):
 
 ```sh
-cargo generate gh:scialpicoody/FerroTemplate
+cargo generate --git https://github.com/scialpicoody/FerroTemplate.git
+# shorthand: cargo generate gh:scialpicoody/FerroTemplate
+# over SSH:  cargo generate --git git@github.com:scialpicoody/FerroTemplate.git
 ```
 
 **Non-interactive** (skip the prompts; all four placeholders must be defined):
 
 ```sh
-cargo generate gh:scialpicoody/FerroTemplate --name my-app \
+cargo generate --git https://github.com/scialpicoody/FerroTemplate.git --name my-app \
   -d description="My app" \
   -d ferroui_version="=0.4.0-preview.1" \
   -d style=xaml \
@@ -47,7 +53,7 @@ cargo generate gh:scialpicoody/FerroTemplate --name my-app \
 [Versioning](#versioning)):
 
 ```sh
-cargo generate gh:scialpicoody/FerroTemplate --tag v0.4.0-preview.1
+cargo generate --git https://github.com/scialpicoody/FerroTemplate.git --tag v0.4.0-preview.1
 ```
 
 **From a local clone** (template development):
@@ -67,6 +73,8 @@ git = "https://github.com/scialpicoody/FerroTemplate"
 
 ```sh
 cargo generate ferroui
+# with a pinned version:
+cargo generate ferroui --tag v0.4.0-preview.1
 ```
 
 > **Note**: this repository is deliberately *not* a GitHub "template repository"
@@ -124,7 +132,7 @@ Tags follow the FerroUI version the template generates for: `v0.4.0-preview.1` i
 is published, so
 
 ```sh
-cargo generate gh:scialpicoody/FerroTemplate --tag <version>
+cargo generate --git https://github.com/scialpicoody/FerroTemplate.git --tag <version>
 ```
 
 always reproduces a project for that framework version. See [CHANGELOG.md](CHANGELOG.md).
