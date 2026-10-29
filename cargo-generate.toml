@@ -1,7 +1,7 @@
 [template]
 description = "A cross-platform desktop application template for FerroUI, a cross-platform UI framework for Rust"
 # Files of the template repository itself, never copied into a generated project.
-ignore = ["TEMPLATE.md", ".github/workflows/template.yml"]
+ignore = [".github/README.md", "CONTRIBUTING.md", "CHANGELOG.md", ".github/workflows/template.yml"]
 
 [placeholders]
 description = { type = "string", prompt = "A short description of the project", default = "A FerroUI application" }
