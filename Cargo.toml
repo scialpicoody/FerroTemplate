@@ -1,0 +1,52 @@
+[package]
+name = "{{project-name}}"
+description = "{{description}}"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.89"
+license = "MIT"
+authors = ["{{authors}}"]
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "{{project-name}}"
+path = "src/main.rs"
+
+{% if style != "xaml" -%}
+[features]
+# Hot reload of the rsx! literals: `cargo run --features hot-reload` (ferroui-view).
+# hot-reload = ["ferroui-view/hot-reload"]
+
+{%- endif %}
+# The build that is shipped: whole-program optimisation, symbols stripped
+# (`cargo build --profile dist`).
+[profile.dist]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+strip = "symbols"
+
+# Every FerroUI crate of a release is pinned to the same exact version, so that the crates
+# of the release are only ever resolved together.
+[dependencies]
+{% if style == "xaml" -%}
+ferroui-base = { version = "{{ferroui_version}}" }
+ferroui-controls = { version = "{{ferroui_version}}" }
+ferroui-markup-xaml = { version = "{{ferroui_version}}" }
+ferroui-desktop = { version = "{{ferroui_version}}" }
+# The developer tools on F12 in debug builds (uncomment once ferroui-diagnostics publishes;
+# also uncomment `attach_dev_tools` in src/main.rs):
+# ferroui-diagnostics = { version = "{{ferroui_version}}" }
+{%- else -%}
+ferroui-base = { version = "{{ferroui_version}}" }
+ferroui-view = { version = "{{ferroui_version}}", features = ["desktop"] }
+{%- endif %}
+ferroui-themes-{{theme}} = { version = "{{ferroui_version}}" }
+
+{% if style == "xaml" -%}
+[build-dependencies]
+ferroui-build = { version = "{{ferroui_version}}" }
+{%- endif %}

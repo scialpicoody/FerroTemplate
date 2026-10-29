@@ -1,0 +1,23 @@
+[template]
+description = "A cross-platform desktop application template for FerroUI, a cross-platform UI framework for Rust"
+# Files of the template repository itself, never copied into a generated project.
+ignore = ["TEMPLATE.md", ".github/workflows/template.yml"]
+
+[placeholders]
+description = { type = "string", prompt = "A short description of the project", default = "A FerroUI application" }
+ferroui_version = { type = "string", prompt = "FerroUI version (the same exact version is pinned for every FerroUI crate)", default = "=0.4.0-preview.1" }
+style = { type = "string", prompt = "Which style should the UI be written in?", choices = ["rsx", "builders", "xaml"], default = "rsx" }
+# The material and macos themes return to the choices once their crates publish to crates.io
+# (the liquid branches for them are already in place).
+theme = { type = "string", prompt = "Which theme?", choices = ["winui", "fluent", "simple"], default = "winui" }
+
+# The XAML style carries the compiled-markup plumbing; the other styles must not see it.
+[conditional.'style != "xaml"']
+ignore = [
+    "build.rs",
+    "App.xaml",
+    "MainWindow.xaml",
+    "src/app.rs",
+    "src/main_window.rs",
+    "src/register_types.rs",
+]

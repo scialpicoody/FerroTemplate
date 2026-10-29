@@ -1,0 +1,74 @@
+# The CI of the template repository itself: renders every style x theme combination and
+# checks the rendered project compiles. This file is never copied into a generated project.
+name: Template
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TARGET_DIR: /tmp/ferro-template-target
+
+jobs:
+  render-matrix:
+    name: check (ubuntu)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        style: [rsx, builders, xaml]
+        theme: [winui, fluent, simple]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Linux prerequisites (fontconfig, FreeType)
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev libfreetype6-dev
+      - name: Install cargo-generate
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-generate
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: {% raw %}${{ matrix.style }}-${{ matrix.theme }}{% endraw %}
+      - name: Render
+        run: |
+          cargo generate --path . --force --name ferro-rendered \
+            -d description="Rendered by the template CI" \
+            -d ferroui_version="=0.4.0-preview.1" \
+            -d style={% raw %}${{ matrix.style }}{% endraw %} \
+            -d theme={% raw %}${{ matrix.theme }}{% endraw %}
+        working-directory: /tmp
+      - name: Check the rendered project
+        run: cargo check --manifest-path /tmp/ferro-rendered/Cargo.toml
+
+  # The default combination is spot-checked on the other platforms: the FerroUI platform
+  # crates and the Skia download differ per operating system.
+  spot-check:
+    name: check ({% raw %}${{ matrix.os }}{% endraw %})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: {% raw %}${{ matrix.os }}{% endraw %}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-generate
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-generate
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: spot-{% raw %}${{ matrix.os }}{% endraw %}
+      - name: Render
+        shell: bash
+        run: |
+          cargo generate --path "$GITHUB_WORKSPACE" --force --name ferro-rendered \
+            -d description="Rendered by the template CI" \
+            -d ferroui_version="=0.4.0-preview.1" \
+            -d style=rsx \
+            -d theme=winui
+        working-directory: /tmp
+      - name: Check the rendered project
+        run: cargo check --manifest-path /tmp/ferro-rendered/Cargo.toml

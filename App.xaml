@@ -1,0 +1,16 @@
+{%- capture project_name_pascal -%}{%- assign parts = crate_name | split: "_" -%}{%- for p in parts -%}{{ p | capitalize }}{%- endfor -%}{%- endcapture -%}
+<Application xmlns="https://github.com/ferroui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="{{project_name_pascal}}.App">
+{%- if theme == "fluent" or theme == "simple" or theme == "winui" %}
+  <Application.Styles>
+    {%- if theme == "winui" %}
+    <WinUITheme />
+    {%- elsif theme == "fluent" %}
+    <FluentTheme />
+    {%- else %}
+    <SimpleTheme />
+    {%- endif %}
+  </Application.Styles>
+{%- endif %}
+</Application>
